@@ -14,7 +14,8 @@ int xdp_load_balancer(struct xdp_md *ctx)
     void *data_end = (void *)(long)ctx->data_end;
 
     bpf_printk("got something");
-
+    
+    // eth header
     struct ethhdr *eth = data;
     if (data + sizeof(struct ethhdr) > data_end)
         return XDP_ABORTED;
@@ -22,6 +23,7 @@ int xdp_load_balancer(struct xdp_md *ctx)
     if (bpf_ntohs(eth->h_proto) != ETH_P_IP)
         return XDP_PASS;
 
+    // ip header 
     struct iphdr *iph = data + sizeof(struct ethhdr);
     if (data + sizeof(struct ethhdr) + sizeof(struct iphdr) > data_end)
         return XDP_ABORTED;
